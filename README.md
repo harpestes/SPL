@@ -4,3 +4,4 @@
 
 
 ### This code was written by AI to demonstrate main features of JavaScript
+### Code was modified by repository creator
