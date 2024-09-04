@@ -1,27 +1,27 @@
-function sum(a, b) {
+function sum(a: number, b: number): number {
     return a + b;
 }
 
-function multiply(a, b) {
+function multiply(a: number, b: number): number {
     return a * b;
 }
 
-function isEven(num) {
+function isEven(num: number): boolean {
     return num % 2 === 0;
 }
 
-function isOdd(num) {
+function isOdd(num: number): boolean {
     return !isEven(num);
 }
 
-function greet(name) {
+function greet(name: string): string {
     return `Hello, ${name}!`;
 }
 
-const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const evens = numbers.filter(isEven);
-const odds = numbers.filter(isOdd);
-const doubled = numbers.map(n => multiply(n, 2));
+const numbers: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const evens: number[] = numbers.filter(isEven);
+const odds: number[] = numbers.filter(isOdd);
+const doubled: number[] = numbers.map((n: number) => multiply(n, 2));
 
 console.log(evens);
 console.log(odds);
@@ -38,7 +38,7 @@ const person = {
 
 person.greet();
 
-function updateAge(p, newAge) {
+function updateAge(p: Person, newAge: number): void {
     p.age = newAge;
 }
 
@@ -46,40 +46,42 @@ updateAge(person, 31);
 console.log(person);
 
 class Animal {
-    constructor(name, age) {
+    name: string;
+    age: number;
+    constructor(name: string, age: number) {
         this.name = name;
         this.age = age;
     }
 
-    speak() {
+    speak(): void {
         console.log(`${this.name} makes a sound.`);
     }
 
-    getAge() {
+    getAge(): number {
         return this.age;
     }
 
-    setAge(age) {
+    setAge(age): void {
         this.age = age;
     }
 }
 
 class Dog extends Animal {
-    speak() {
+    speak(): void {
         console.log(`${this.name} barks.`);
     }
 }
 
-const dog = new Dog("Buddy", 3);
+const dog: Dog = new Dog("Buddy", 3);
 dog.speak();
 dog.setAge(4);
 console.log(dog.getAge());
 
-function delay(ms) {
+function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function asyncOperation() {
+async function asyncOperation(): Promise<void> {
     console.log("Starting async operation...");
 
     await delay(100);
@@ -89,35 +91,41 @@ async function asyncOperation() {
 
 asyncOperation();
 
-const items = [
+interface Item {
+    id: number;
+    name: string;
+    price: number;
+}
+
+const items: Item[] = [
     { id: 1, name: "item1", price: 100 },
     { id: 2, name: "item2", price: 200 },
     { id: 3, name: "item3", price: 300 },
 ];
 
-const totalCost = items.reduce((total, item) => total + item.price, 0);
+const totalCost: number = items.reduce((total: number, item: Item) => total + item.price, 0);
 console.log(`Total cost: ${totalCost}`);
 
-const itemNames = items.map(item => item.name);
+const itemNames: string[] = items.map(item: Item => item.name);
 console.log(itemNames);
 
-function add(x) {
-    return function(y) {
+function add(x: number): (y: number) => number {
+    return function(y: number): number {
         return x + y;
     };
 }
 
-const add5 = add(5);
-console.log(add5(10)); // 15
+const add5: (y: number) => number = add(5);
+console.log(add5(10));
 
-function processArray(arr, fn) {
+function processArray(arr: number[], fn: (n: number) => number): number[] {
     return arr.map(fn);
 }
 
-const squaredNumbers = processArray(numbers, n => n * n);
+const squaredNumbers: number[] = processArray(numbers, (n: number) => n * n);
 console.log(squaredNumbers);
 
-function factorial(n) {
+function factorial(n: number): number {
     if (n <= 1) {
         return 1;
     }
@@ -126,44 +134,49 @@ function factorial(n) {
 
 console.log(factorial(5));
 
-const { firstName, lastName } = person;
+interface Person {
+    firstName: string;
+    lastName: string
+}
+
+const { firstName, lastName }: Person = person;
 console.log(`First Name: ${firstName}, Last Name: ${lastName}`);
 
-const extendedPerson = { ...person, location: "Earth" };
+const extendedPerson: Person & { location: string } = { ...person, location: "Earth" };
 console.log(extendedPerson);
 
-function printAll(...args) {
+function printAll(...args: number[]): void {
     args.forEach(arg => console.log(arg));
 }
 
 printAll(1, 2, 3, 4, 5);
 
-function greetUser(name = "Guest") {
+function greetUser(name: string = "Guest"): void {
     console.log(`Hello, ${name}`);
 }
 
 greetUser();
 greetUser("Alice");
 
-const templateLiteralExample = `Sum of 2 and 3 is ${sum(2, 3)}`;
+const templateLiteralExample: string = `Sum of 2 and 3 is ${sum(2, 3)}`;
 console.log(templateLiteralExample);
 
-const [first, second, ...rest] = numbers;
+const [first, second, ...rest]: number[] = numbers;
 console.log(first);
 console.log(second);
 console.log(rest);
 
-const isAdult = person.age > 18 || "Not an adult";
+const isAdult: boolean | string = person.age > 18 || "Not an adult";
 console.log(isAdult);
 
-const user = null;
-const defaultUser = user ?? "Anonymous";
+const user: string | null = null;
+const defaultUser: string = user ?? "Anonymous";
 console.log(defaultUser);
 
-const accessLevel = person.age > 18 ? "Adult" : "Child";
+const accessLevel: string = person.age > 18 ? "Adult" : "Child";
 console.log(accessLevel);
 
-function getDay(day) {
+function getDay(day: number): string {
     switch(day) {
         case 1: return "Monday";
         case 2: return "Tuesday";
@@ -174,27 +187,27 @@ function getDay(day) {
 
 console.log(getDay(1));
 
-for (let i = 0; i < 5; i++) {
+for (let i: number = 0; i < 5; i++) {
     console.log(i);
 }
 
-let count = 0;
+let count: number = 0;
 while (count < 5) {
     console.log(count);
     count++;
 }
 
-let num = 0;
+let num: number = 0;
 do {
     console.log(num);
     num++;
 } while (num < 5);
 
-const addArrow = (a, b) => a + b;
+const addArrow = (a: number, b: number) => a + b;
 console.log(addArrow(3, 4));
 
-const jsonData = JSON.stringify(person);
+const jsonData: string = JSON.stringify(person);
 console.log(jsonData);
 
-const parsedData = JSON.parse(jsonData);
+const parsedData: Person = JSON.parse(jsonData);
 console.log(parsedData);
