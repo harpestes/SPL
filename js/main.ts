@@ -62,18 +62,7 @@ document.addEventListener('DOMContentLoaded', (): void => {
                                 <h5>email: ${user.email}</h5>
                             </div>
                             <div class="img-box">
-                                <img src="../images/t${i}.jpg" alt="">
-                            </div>
-                            <div class="social_box">
-                                <a href="https://www.free-css.com/free-css-templates">
-                                    <img src="../images/facebook-logo.png" alt="">
-                                </a> 
-                                <a href="https://www.free-css.com/free-css-templates">
-                                    <img src="../images/twitter.png" alt="">
-                                </a> 
-                                <a href="https://www.free-css.com/free-css-templates">
-                                    <img src="../images/instagram-logo.png" alt="">
-                                </a>
+                                <img src="https://www.siwc.ca/wp-content/uploads/2019/03/Alluri_AuthorPhotoSoft_by_Erik_Haensel-scaled-370x390.jpg" alt="">
                             </div>
                         </div>
                     `;
