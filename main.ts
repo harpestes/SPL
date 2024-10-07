@@ -150,7 +150,7 @@ function getClassroomUtilization(classroomNumber: string): number {
     }
 
     const occupiedSlots = schedule.filter(lesson => lesson.classroomNumber === classroomNumber).length;
-
+    //Calculating percentage of classroom usage based on number of lessons in this classroom during the week
     return (occupiedSlots / totalSlots) * 100;
 }
 
@@ -162,6 +162,7 @@ function getMostPopularCourseType(): CourseType {
         Practice: 0
     };
 
+    //Calculating count of each type of lesson
     schedule.forEach(lesson => {
         const course = courses.find(c => c.id === lesson.courseId);
         if (course) {
