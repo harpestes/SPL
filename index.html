@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom and Schedule Management Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        input, select, button {
+            margin: 5px 0;
+            padding: 10px;
+        }
+        .output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            max-width: 800px;
+        }
+        pre {
+            background-color: #eee;
+            padding: 10px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Додавання професора</h2>
+<label for="professorId">ID професора:</label>
+<input type="text" id="professorId">
+<label for="professorName">Ім'я професора:</label>
+<input type="text" id="professorName">
+<label for="professorDept">Кафедра:</label>
+<input type="text" id="professorDept">
+<button onclick="addProfessorFromInput()">Додати професора</button>
+<div id="professorMessage" class="error"></div>
+
+<h2>Додавання курсу</h2>
+<label for="courseId">ID курсу:</label>
+<input type="text" id="courseId">
+<label for="courseName">Назва курсу:</label>
+<input type="text" id="courseName">
+<label for="courseType">Тип курсу:</label>
+<select id="courseType">
+    <option value="Lecture">Лекція</option>
+    <option value="Seminar">Семінар</option>
+    <option value="Lab">Лабораторна</option>
+    <option value="Practice">Практика</option>
+</select>
+<button onclick="addCourseFromInput()">Додати курс</button>
+<div id="courseMessage" class="error"></div>
+
+<h2>Додавання аудиторії</h2>
+<label for="classroomNumber">Номер аудиторії:</label>
+<input type="text" id="classroomNumber">
+<label for="classroomCapacity">Місткість:</label>
+<input type="text" id="classroomCapacity">
+<button onclick="addClassroomFromInput()">Додати аудиторію</button>
+<div id="classroomMessage" class="error"></div>
+
+<h2>Додавання уроку</h2>
+<label for="lessonId">ID уроку:</label>
+<input type="text" id="lessonId">
+<label for="lessonProfessorId">ID професора:</label>
+<input type="text" id="lessonProfessorId">
+<label for="lessonCourseId">ID курсу:</label>
+<input type="text" id="lessonCourseId">
+<label for="lessonClassroomNumber">Номер аудиторії:</label>
+<input type="text" id="lessonClassroomNumber">
+<label for="lessonDay">День тижня:</label>
+<select id="lessonDay">
+    <option value="Monday">Понеділок</option>
+    <option value="Tuesday">Вівторок</option>
+    <option value="Wednesday">Середа</option>
+    <option value="Thursday">Четвер</option>
+    <option value="Friday">П'ятниця</option>
+</select>
+<label for="lessonTimeSlot">Часовий слот:</label>
+<input type="text" id="lessonTimeSlot">
+<button onclick="addLessonFromInput()">Додати урок</button>
+<div id="lessonMessage" class="error"></div>
+
+<h2>Дізнатися завантаженість аудиторії</h2>
+<label for="utilClassroomNumber">Номер аудиторії:</label>
+<input type="text" id="utilClassroomNumber">
+<button onclick="getClassroomUtilizationFromInput()">Отримати завантаженість</button>
+<pre id="classroomUtilizationOutput"></pre>
+
+<h2>Найпопулярніший тип курсу</h2>
+<button onclick="getMostPopularCourseTypeFromInput()">Дізнатися найпопулярніший тип курсу</button>
+<pre id="popularCourseTypeOutput"></pre>
+
+<h2>Змінити аудиторію уроку</h2>
+<label for="reassignLessonId">ID уроку:</label>
+<input type="text" id="reassignLessonId">
+<label for="newClassroomNumber">Номер нової аудиторії:</label>
+<input type="text" id="newClassroomNumber">
+<button onclick="reassignClassroomFromInput()">Перепризначити аудиторію</button>
+<div id="reassignMessage" class="error"></div>
+
+<h2>Скасувати урок</h2>
+<label for="cancelLessonId">ID уроку:</label>
+<input type="text" id="cancelLessonId">
+<button onclick="cancelLessonFromInput()">Скасувати урок</button>
+<div id="cancelMessage" class="error"></div>
+
+<div class="output">
+    <h2>Професори</h2>
+    <pre id="professorsOutput"></pre>
+
+    <h2>Курси</h2>
+    <pre id="coursesOutput"></pre>
+
+    <h2>Аудиторії</h2>
+    <pre id="classroomsOutput"></pre>
+
+    <h2>Розклад</h2>
+    <pre id="scheduleOutput"></pre>
+</div>
+
+<script src="main.js"></script>
+
+<script>
+    function displayProfessors() {
+        document.getElementById('professorsOutput').innerText = JSON.stringify(professors, null, 2);
+    }
+
+    function displayCourses() {
+        document.getElementById('coursesOutput').innerText = JSON.stringify(courses, null, 2);
+    }
+
+    function displayClassrooms() {
+        document.getElementById('classroomsOutput').innerText = JSON.stringify(classrooms, null, 2);
+    }
+
+    function displaySchedule() {
+        document.getElementById('scheduleOutput').innerText = JSON.stringify(schedule, null, 2);
+    }
+
+    function addProfessorFromInput() {
+        const professorId = document.getElementById('professorId').value.trim();
+        const professorName = document.getElementById('professorName').value.trim();
+        const professorDept = document.getElementById('professorDept').value.trim();
+        const messageDiv = document.getElementById('professorMessage');
+
+        if (!professorId || !professorName || !professorDept) {
+            messageDiv.innerText = "Всі поля повинні бути заповнені.";
+            return;
+        } else {
+            messageDiv.innerText = "";
+        }
+
+        const professor = {
+            id: professorId,
+            name: professorName,
+            department: professorDept
+        };
+
+        try {
+            addProfessor(professor);
+            displayProfessors();
+            messageDiv.classList.remove("error");
+            messageDiv.classList.add("success");
+            messageDiv.innerText = "Професора успішно додано!";
+        } catch (error) {
+            messageDiv.innerText = error.message;
+        }
+    }
+
+    function addCourseFromInput() {
+        const courseId = document.getElementById('courseId').value.trim();
+        const courseName = document.getElementById('courseName').value.trim();
+        const courseType = document.getElementById('courseType').value;
+        const messageDiv = document.getElementById('courseMessage');
+
+        if (!courseId || !courseName) {
+            messageDiv.innerText = "ID курсу та назва курсу повинні бути заповнені.";
+            return;
+        } else {
+            messageDiv.innerText = "";
+        }
+
+        const course = {
+            id: courseId,
+            name: courseName,
+            type: courseType
+        };
+
+        try {
+            addCourse(course);
+            displayCourses();
+            messageDiv.classList.remove("error");
+            messageDiv.classList.add("success");
+            messageDiv.innerText = "Курс успішно додано!";
+        } catch (error) {
+            messageDiv.innerText = error.message;
+        }
+    }
+
+    function addClassroomFromInput() {
+        const classroomNumber = document.getElementById('classroomNumber').value.trim();
+        const classroomCapacity = document.getElementById('classroomCapacity').value.trim();
+        const messageDiv = document.getElementById('classroomMessage');
+
+        if (!classroomNumber || !classroomCapacity) {
+            messageDiv.innerText = "Номер аудиторії та місткість повинні бути заповнені.";
+            return;
+        } else {
+            messageDiv.innerText = "";
+        }
+
+        const classroom = {
+            number: classroomNumber,
+            capacity: classroomCapacity
+        };
+
+        try {
+            addClassroom(classroom);
+            displayClassrooms();
+            messageDiv.classList.remove("error");
+            messageDiv.classList.add("success");
+            messageDiv.innerText = "Аудиторію успішно додано!";
+        } catch (error) {
+            messageDiv.innerText = error.message;
+        }
+    }
+
+    function addLessonFromInput() {
+        const lessonId = document.getElementById('lessonId').value.trim();
+        const lessonProfessorId = document.getElementById('lessonProfessorId').value.trim();
+        const lessonCourseId = document.getElementById('lessonCourseId').value.trim();
+        const lessonClassroomNumber = document.getElementById('lessonClassroomNumber').value.trim();
+        const lessonDay = document.getElementById('lessonDay').value;
+        const lessonTimeSlot = document.getElementById('lessonTimeSlot').value;
+        const messageDiv = document.getElementById('lessonMessage');
+
+        if (!lessonId || !lessonProfessorId || !lessonCourseId || !lessonClassroomNumber || !lessonTimeSlot) {
+            messageDiv.innerText = "Всі поля повинні бути заповнені.";
+            return;
+        } else {
+            messageDiv.innerText = "";
+        }
+
+        const lesson = {
+            id: lessonId,
+            professorId: lessonProfessorId,
+            courseId: lessonCourseId,
+            classroomNumber: lessonClassroomNumber,
+            dayOfWeek: lessonDay,
+            timeSlot: lessonTimeSlot
+        };
+
+        try {
+            addLesson(lesson);
+            displaySchedule();
+            messageDiv.classList.remove("error");
+            messageDiv.classList.add("success");
+            messageDiv.innerText = "Урок успішно додано!";
+        } catch (error) {
+            messageDiv.innerText = error.message;
+        }
+    }
+
+    function getClassroomUtilizationFromInput() {
+        const classroomNumber = document.getElementById('utilClassroomNumber').value.trim();
+        const outputDiv = document.getElementById('classroomUtilizationOutput');
+
+        if (!classroomNumber) {
+            outputDiv.innerText = "Будь ласка, введіть номер аудиторії.";
+            return;
+        }
+
+        try {
+            const utilization = getClassroomUtilization(classroomNumber);
+            outputDiv.innerText = `Завантаженість аудиторії ${classroomNumber}: ${utilization.toFixed(2)}%`;
+        } catch (error) {
+            outputDiv.innerText = error.message;
+        }
+    }
+
+    function getMostPopularCourseTypeFromInput() {
+        const outputDiv = document.getElementById('popularCourseTypeOutput');
+
+        try {
+            const mostPopularType = getMostPopularCourseType();
+            outputDiv.innerText = `Найпопулярніший тип курсу: ${mostPopularType}`;
+        } catch (error) {
+            outputDiv.innerText = error.message;
+        }
+    }
+
+    function reassignClassroomFromInput() {
+        const lessonId = document.getElementById('reassignLessonId').value.trim();
+        const newClassroomNumber = document.getElementById('newClassroomNumber').value.trim();
+        const messageDiv = document.getElementById('reassignMessage');
+
+        if (!lessonId || !newClassroomNumber) {
+            messageDiv.innerText = "ID уроку та новий номер аудиторії повинні бути заповнені.";
+            return;
+        } else {
+            messageDiv.innerText = "";
+        }
+
+        try {
+            reassignClassroom(lessonId, newClassroomNumber);
+            displaySchedule(); // Оновлюємо розклад
+            messageDiv.classList.remove("error");
+            messageDiv.classList.add("success");
+            messageDiv.innerText = "Аудиторію успішно перепризначено!";
+        } catch (error) {
+            messageDiv.innerText = error.message;
+        }
+    }
+
+    function cancelLessonFromInput() {
+        const lessonId = document.getElementById('cancelLessonId').value.trim();
+        const messageDiv = document.getElementById('cancelMessage');
+
+        if (!lessonId) {
+            messageDiv.innerText = "Будь ласка, введіть ID уроку.";
+            return;
+        } else {
+            messageDiv.innerText = "";
+        }
+
+        try {
+            cancelLesson(lessonId);
+            displaySchedule(); // Оновлюємо розклад
+            messageDiv.classList.remove("error");
+            messageDiv.classList.add("success");
+            messageDiv.innerText = "Урок успішно скасовано!";
+        } catch (error) {
+            messageDiv.innerText = error.message;
+        }
+    }
+</script>
+
+</body>
+</html>
