@@ -121,7 +121,7 @@ function validateLesson(lesson: Lesson): ScheduleConflict | null {
     }
 
     const classroomConflict = schedule.find(
-        existingLesson => existingLesson === lesson
+        existingLesson => existingLesson.id === lesson.id
     );
     if (classroomConflict) {
         return {type: "ClassroomConflict", lessonDetails: classroomConflict};
@@ -144,9 +144,9 @@ function getClassroomUtilization(classroomNumber: string): number {
     const totalSlots = days * timeSlots;
 
 
-    const existingClassroom = schedule.find(lesson => lesson.classroomNumber === classroomNumber);
+    const existingClassroom = classrooms.find(classroom => classroom.number === classroomNumber);
     if (!existingClassroom) {
-        throw new ItemDoesNotExistError(`Classroom ${classroomNumber} does not exist.`)
+        throw new ItemDoesNotExistError(`Classroom ${classroomNumber} does not exist.`);
     }
 
     const occupiedSlots = schedule.filter(lesson => lesson.classroomNumber === classroomNumber).length;
@@ -170,22 +170,10 @@ function getMostPopularCourseType(): CourseType {
         }
     });
 
-    let mostPopularType: CourseType = "Lecture";
-    let maxCount = typeCounts.Lecture;
-
-    if (typeCounts.Seminar > maxCount) {
-        mostPopularType = "Seminar";
-        maxCount = typeCounts.Seminar;
-    }
-    else if (typeCounts.Lab > maxCount) {
-        mostPopularType = "Lab";
-        maxCount = typeCounts.Lab;
-    }
-    else if (typeCounts.Practice > maxCount) {
-        mostPopularType = "Practice";
-    }
-
-    return mostPopularType;
+    return Object.entries(typeCounts).reduce(
+        (mostPopular, [type, count]) =>
+            count > typeCounts[mostPopular] ? (type as CourseType) : mostPopular, "Lecture" as CourseType
+    );
 }
 
 function reassignClassroom(lessonId: number, newClassroomNumber: string): boolean {
